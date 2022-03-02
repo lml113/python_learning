@@ -1,0 +1,10 @@
+a = 'abcabcabcabacabac'
+print(a.split('ab'))
+b = a.replace('a','')
+print(b)
+c = b.replace('bc','bc,')
+c = c.strip(',')
+print(c.center(20,'='))
+d = c.split(',')
+print(d)
+print(len(d))
