@@ -14,7 +14,7 @@ class CursiveSignature(QMainWindow,Ui_Form):
         self.initUI()
     def initUI(self):
         self.setWindowTitle('艺术签名')
-        self.setWindowIcon(QIcon(r"F:\vscode\python\python_learning\CursiveSignature\images\1.jpg"))
+        self.setWindowIcon(QIcon(r'F:\vscode\python\python_learning\CursiveSignature\images\1.ico'))
 
         self.res = None
         self.lineEdit.setPlaceholderText('2-20个汉字')
