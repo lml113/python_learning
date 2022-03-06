@@ -1,9 +1,9 @@
 import sys
 import re
 import os
-from PIL import Image
 import requests
 from Ui_Widget import Ui_Form
+import FCid
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QApplication,QMainWindow,QFileDialog
 
@@ -16,37 +16,20 @@ class CursiveSignature(QMainWindow,Ui_Form):
         self.setWindowTitle('艺术签名')
         self.setWindowIcon(QIcon('./GUI_Design/Images/1.ico'))
 
-        self.show_image = None
+        self.res = None
+        self.lineEdit.setPlaceholderText('2-20个汉字')
         self.pushButton_save.clicked.connect(self.save)
         self.pushButton_generate.clicked.connect(self.generate)
         pass
     def save(self):
         # QFileDialog.getSaveFileName(str = 'CursiveSignature/tmp.jpg')
-        if self.show_image is not None:
+        if self.res is not None:
             filename = QFileDialog.getSaveFileName(self, '保存', './CursiveSignature/tmp.%s' % self.show_image_ext, '文件类型(*.jpg)')
-            self.show_image.save(filename[0])
+            if filename[0] != '':
+                with open(filename[0], 'wb') as f:
+                    f.write(self.res)
 
     def generate(self):
-        font2ids_dict = {
-                            '一笔艺术签': ['901', '15'],
-                            '连笔商务签': ['904', '15'],
-                            '一笔商务签': ['905', '14'],
-                            '真人手写': ['343', '14'],
-                            '卡通趣圆字': ['397', '14'],
-                            '暴躁字': ['380', '14']
-                    }
-        color2ids_dict = {
-                            'Black': ['#000000', '#FFFFFF'],
-                            'Blue': ['#0000FF', '#FFFFFF'],
-                            'Red': ['#FF0000', '#FFFFFF'],
-                            'Green': ['#00FF00', '#FFFFFF'],
-                            'Yellow': ['#FFFF00', '#FFFFFF'],
-                            'Pink': ['#FFC0CB', '#FFFFFF'],
-                            'DeepSkyBlue': ['#00BFFF', '#FFFFFF'],
-                            'Cyan': ['#00FFFF', '#FFFFFF'],
-                            'Orange': ['#FFA500', '#FFFFFF'],
-                            'Seashell': ['#FFF5EE', '#FFFFFF']
-                        }
         url = 'http://www.jiqie.com/a/re14.php'
         headers = {
                     'Referer': 'http://www.jiqie.com/a/14.htm',
@@ -54,8 +37,8 @@ class CursiveSignature(QMainWindow,Ui_Form):
                     'Host': 'www.jiqie.com',
                     'Origin': 'http://www.jiqie.com'
                     }
-        fontdata = font2ids_dict[self.comboBox_2.currentText()]
-        colordata = color2ids_dict[self.comboBox_3.currentText()]
+        fontdata = FCid.font2ids_dict[self.comboBox_2.currentText()]
+        colordata = FCid.color2ids_dict[self.comboBox_3.currentText()]
         data = {
                 'id': self.lineEdit.text(),
                 'zhenbi': '20191123',
@@ -64,19 +47,19 @@ class CursiveSignature(QMainWindow,Ui_Form):
                 'id3': colordata[0],# 默认黑色字体
                 'id5': colordata[1]
                 }
-        res = requests.post(url, headers=headers, data=data)
-        image_url = re.findall(r'src="(.*?)"', res.text)[0]
-        self.show_image_ext = image_url.split('.')[-1].split('?')[0]
-        res = requests.get(image_url)
-        fp = open('CursiveSignature/tmp.%s' % self.show_image_ext, 'wb')
-        fp.write(res.content)
-        fp.close()
-        self.show_image = Image.open('CursiveSignature/tmp.%s' % self.show_image_ext).convert('RGB')
-        self.textBrowser.setHtml("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
-        "<html>\n"
-        "<img src=\"CursiveSignature/tmp.jpg\" width =\"770\" height =\"390\"\n"
-        "</html>")
-        os.remove('CursiveSignature/tmp.%s' % self.show_image_ext)
+        if len(data['id'])>=2:
+            res = requests.post(url, headers=headers, data=data)
+            image_url = re.findall(r'src="(.*?)"', res.text)[0]
+            self.show_image_ext = image_url.split('.')[-1].split('?')[0]
+            self.res = requests.get(image_url).content
+            fp = open('CursiveSignature/tmp.%s' % self.show_image_ext, 'wb')
+            fp.write(self.res)
+            fp.close()
+            self.textBrowser.setHtml("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+            "<html>\n"
+            "<img src=\"CursiveSignature/tmp.jpg\" width =\"770\" height =\"390\"\n"
+            "</html>")
+            os.remove('CursiveSignature/tmp.%s' % self.show_image_ext)
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
