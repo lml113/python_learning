@@ -1,11 +1,12 @@
 import cv2 as cv
 import numpy as np
 
-img = cv.imread('Opencv\images\girl.jpg',0)# Direct to grayscale
+img = cv.imread('Opencv\images\Original1.jpg',0)# Direct to grayscale
+blur = cv.imread('Opencv\images\Gaussian_filter_image1.jpg',0)
 cv.imshow('img',img)
-blur = cv.GaussianBlur(img, (3, 3), 0)  # 用高斯滤波处理原图像降噪
-for i in range(5):
-    blur = cv.GaussianBlur(blur, (3, 3), 0)  # 用高斯滤波处理原图像降噪
+# blur = cv.GaussianBlur(img, (3, 3), 0)  # 用高斯滤波处理原图像降噪
+# for i in range(5):
+#     blur = cv.GaussianBlur(blur, (3, 3), 0)  # 用高斯滤波处理原图像降噪
 # cv.imshow('img',img)
 cv.imshow('blur',blur)
 
@@ -15,8 +16,8 @@ canny_not = cv.Canny(img,50,100)
 # cv.namedWindow("canny",0);#可调大小
 # cv.namedWindow("canny_not",0);#可调大小
 
+cv.imshow('canny_not',canny_not)
 cv.imshow('canny',canny)
-# cv.imshow('canny_not',canny_not)
 
 cv.waitKey(0)# Press the keyboard to stop operation
 cv.destroyAllWindows()

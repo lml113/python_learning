@@ -3,25 +3,26 @@ import numpy as np
 
 # 自定义函数
 def my_bgr2hsv(bgr):# bgr转hsv
-    bgr_max = max(bgr)
-    bgr_min = min(bgr)
-    bgr_c = bgr_max - bgr_min
     B,G,R = bgr
+    B,G,R = B/255,G/255,R/255
+    bgr_max = max(B,G,R)
+    bgr_min = min(B,G,R)
+    bgr_c = bgr_max - bgr_min
 
     H,S,V = 0,0,0
     if(bgr_max == bgr_min):
         H = 0
-    elif(bgr_max==R & G >= B):
+    elif(bgr_max==R):
         H = 60*(G-B)/bgr_c
-    elif(bgr_max==R & G < B):
-        H = 60*(G-B)/bgr_c+360
-    elif(bgr_max== G):
+    elif(bgr_max==G):
         H = 120+60*(B-R)/bgr_c
-    elif(bgr_max== B):
+    elif(bgr_max==B):
         H = 240+60*(R-G)/bgr_c
-    else:
-        pass
-    H = np.uint8(H)
+
+    if(H<0):
+        H = H+360
+
+    H = np.uint8(H/2)
 
     if(bgr_max == 0):
         S = 0
@@ -29,10 +30,10 @@ def my_bgr2hsv(bgr):# bgr转hsv
         S = bgr_c/bgr_max
     S = np.uint8(S*255)
 
-    V = bgr_max
+    V = np.uint8(bgr_max*255)
     return [H,S,V]
 
-frame = cv2.imread(r'F:\vscode\python\python_learning\Opencv\images\bol.jpg')
+frame = cv2.imread(r'F:\vscode\python\python_learning\Opencv\images\1.jpg')
 
 hsv_frame_b = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 

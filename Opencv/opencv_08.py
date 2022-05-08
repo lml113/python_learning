@@ -33,12 +33,12 @@ def my_bgr2hsv(bgr):# bgr转hsv
     V = np.uint8(bgr_max*255)
     return [H,S,V]
 
-lower = [4, 180, 156]    # 适用于橙色乒乓球4<=h<=32
-upper = [32, 255, 255]
-lower1 = np.array([4, 180, 156])     # 适用于橙色乒乓球4<=h<=32
-upper1 = np.array([100, 255, 255])
+lower = [4, 64, 156]    # 适用于橙色乒乓球4<=h<=32
+upper = [32, 150, 255]
+lower1 = np.array([4, 64, 156])     # 适用于橙色乒乓球4<=h<=32
+upper1 = np.array([32, 150, 255])
 
-frame = cv2.imread(r'F:\vscode\python\python_learning\Opencv\images\bol2.jpg')
+frame = cv2.imread(r'F:\vscode\python\python_learning\Opencv\images\Gaussian_filter_image2.jpg')
 hsv_frame_b = cv2.cvtColor(frame,cv2.COLOR_BGR2HSV)
 
 Higth,width,_ = frame.shape
@@ -76,7 +76,7 @@ while True:
     cv2.imshow('binary',binary)
     cv2.imshow('hsv_frame_b',hsv_frame_b)
     cv2.imshow('imgOutput_b',imgOutput_b)
-    #cv2.imwrite(r'F:\vscode\python\python_learning\Opencv\images\bol_2.jpg',binary)
+    cv2.imwrite(r'F:\vscode\python\python_learning\Opencv\images\binary2.jpg',binary)
     key = cv2.waitKey(1)
     if(key == 27):
         break
